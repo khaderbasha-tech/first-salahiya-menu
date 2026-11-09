@@ -100,31 +100,59 @@ button {
   <button onclick="restart()">REPLAY MENU</button>
 </section>
 
-<script>
+  <script>
 let current = 0;
 let timer;
+
+function speakWelcome() {
+  if (!("speechSynthesis" in window)) return;
+
+  speechSynthesis.cancel();
+
+  const message = new SpeechSynthesisUtterance(
+    "Welcome to First Salahiya Restaurant! We're delighted to serve you. Please enjoy exploring our menu."
+  );
+
+  message.lang = "en-IN";
+  message.rate = 0.9;
+  message.pitch = 1;
+  message.volume = 1;
+
+  speechSynthesis.speak(message);
+}
 
 function startMenu() {
   document.getElementById("welcome").style.display = "none";
   document.getElementById("menu").style.display = "block";
+
+  speechSynthesis.cancel();
+
   current = 0;
   showSlide();
+
   clearInterval(timer);
   timer = setInterval(showSlide, 4000);
 }
 
 function showSlide() {
   let slides = document.querySelectorAll(".slide");
+
   slides.forEach(s => s.classList.remove("active"));
   slides[current].classList.add("active");
+
   current = (current + 1) % slides.length;
 }
 
 function restart() {
   clearInterval(timer);
+
   document.getElementById("menu").style.display = "none";
   document.getElementById("welcome").style.display = "flex";
+
+  speakWelcome();
 }
+
+window.addEventListener("load", speakWelcome);
 </script>
 
 </body>
