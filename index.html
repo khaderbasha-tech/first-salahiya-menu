@@ -100,59 +100,73 @@ button {
   <button onclick="restart()">REPLAY MENU</button>
 </section>
 
-  <script>
+ <script>
 let current = 0;
 let timer;
+let speaking = false;
 
-function speakWelcome() {
-  if (!("speechSynthesis" in window)) return;
+function startMenu() {
+  if (speaking) return;
+  speaking = true;
+
+  const button = document.querySelector(".welcome button");
+  button.textContent = "PLEASE WAIT...";
+
+  function openMenu() {
+    document.getElementById("welcome").style.display = "none";
+    document.getElementById("menu").style.display = "block";
+    current = 0;
+    showSlide();
+    clearInterval(timer);
+    timer = setInterval(showSlide, 4000);
+    speaking = false;
+  }
+
+  if (!("speechSynthesis" in window)) {
+    openMenu();
+    return;
+  }
 
   speechSynthesis.cancel();
 
   const message = new SpeechSynthesisUtterance(
-    "Welcome to First Salahiya Restaurant! We're delighted to serve you. Please enjoy exploring our menu."
+    "Welcome to First Salahiya Restaurant! We are delighted to serve you. Please enjoy exploring our menu."
   );
 
   message.lang = "en-IN";
-  message.rate = 0.9;
+  message.rate = 0.85;
   message.pitch = 1;
   message.volume = 1;
 
+  message.onend = openMenu;
+  message.onerror = openMenu;
+
   speechSynthesis.speak(message);
-}
 
-function startMenu() {
-  document.getElementById("welcome").style.display = "none";
-  document.getElementById("menu").style.display = "block";
-
-  speechSynthesis.cancel();
-
-  current = 0;
-  showSlide();
-
-  clearInterval(timer);
-  timer = setInterval(showSlide, 4000);
+  // Safety fallback
+  setTimeout(() => {
+    if (speaking) openMenu();
+  }, 12000);
 }
 
 function showSlide() {
-  let slides = document.querySelectorAll(".slide");
-
+  const slides = document.querySelectorAll(".slide");
   slides.forEach(s => s.classList.remove("active"));
   slides[current].classList.add("active");
-
   current = (current + 1) % slides.length;
 }
 
 function restart() {
   clearInterval(timer);
+  speechSynthesis.cancel();
+  speaking = false;
 
   document.getElementById("menu").style.display = "none";
   document.getElementById("welcome").style.display = "flex";
 
-  speakWelcome();
+  const button = document.querySelector(".welcome button");
+  button.textContent = "VIEW OUR MENU";
 }
-
-window.addEventListener("load", speakWelcome);
 </script>
 
 </body>
