@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>First Salahiya Restaurant</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #100d09;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+.welcome {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 25px;
+  background: radial-gradient(circle, #453019, #100d09 75%);
+}
+.avatar {
+  font-size: 100px;
+  animation: appear 2s ease;
+}
+h1 {
+  color: #e9bd70;
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+p {
+  color: #eee0c9;
+  line-height: 1.7;
+}
+button {
+  border: 0;
+  padding: 14px 28px;
+  border-radius: 30px;
+  background: #d9aa55;
+  color: #17100a;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+.menu {
+  padding: 30px 15px;
+  display: none;
+}
+.menu h2 {
+  color: #e9bd70;
+}
+.slide {
+  width: 100%;
+  max-width: 500px;
+  height: 480px;
+  object-fit: contain;
+  background: #211b14;
+  border-radius: 15px;
+  display: none;
+  margin: 20px auto;
+}
+.slide.active {
+  display: block;
+  animation: appear 1s ease;
+}
+@keyframes appear {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<section class="welcome" id="welcome">
+  <div class="avatar">👨🏻‍🍳</div>
+  <h1>FIRST SALAHIYA RESTAURANT</h1>
+  <p id="welcomeText">
+    Welcome to First Salahiya Restaurant!
+    We're delighted to serve you.
+  </p>
+  <button onclick="startMenu()">VIEW OUR MENU</button>
+</section>
+
+<section class="menu" id="menu">
+  <h2>OUR SPECIAL MENU</h2>
+
+  <img class="slide active" src="https://placehold.co/600x800/332619/ffffff?text=MENU+PAGE+1" alt="Menu page 1">
+  <img class="slide" src="https://placehold.co/600x800/332619/ffffff?text=MENU+PAGE+2" alt="Menu page 2">
+  <img class="slide" src="https://placehold.co/600x800/332619/ffffff?text=MENU+PAGE+3" alt="Menu page 3">
+  <img class="slide" src="https://placehold.co/600x800/332619/ffffff?text=MENU+PAGE+4" alt="Menu page 4">
+
+  <p>Thank you for visiting us!</p>
+  <button onclick="restart()">REPLAY MENU</button>
+</section>
+
+<script>
+let current = 0;
+let timer;
+
+function startMenu() {
+  document.getElementById("welcome").style.display = "none";
+  document.getElementById("menu").style.display = "block";
+  current = 0;
+  showSlide();
+  clearInterval(timer);
+  timer = setInterval(showSlide, 4000);
+}
+
+function showSlide() {
+  let slides = document.querySelectorAll(".slide");
+  slides.forEach(s => s.classList.remove("active"));
+  slides[current].classList.add("active");
+  current = (current + 1) % slides.length;
+}
+
+function restart() {
+  clearInterval(timer);
+  document.getElementById("menu").style.display = "none";
+  document.getElementById("welcome").style.display = "flex";
+}
+</script>
+
+</body>
+</html>
