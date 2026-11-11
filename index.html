@@ -7,263 +7,220 @@
 
 <style>
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
 body {
+  margin: 0;
   font-family: Arial, sans-serif;
-  background: #111;
+  background: linear-gradient(135deg, #111, #30200e, #111);
   color: white;
   text-align: center;
 }
 
-.welcome {
+.screen {
   min-height: 100vh;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  padding: 25px;
-  background: linear-gradient(135deg, #101010, #573b19, #111);
+  justify-content: center;
 }
 
-.chef {
-  font-size: 75px;
-  margin-bottom: 20px;
-}
-
-.welcome h1 {
+h1 {
+  color: #f5cf82;
   font-size: 30px;
-  color: #f7cf83;
-  margin-bottom: 15px;
+  margin: 12px 0;
 }
 
-.welcome p {
+p {
   font-size: 17px;
   line-height: 1.6;
-  margin-bottom: 30px;
+}
+
+video {
+  width: 100%;
+  max-width: 500px;
+  max-height: 65vh;
+  object-fit: contain;
+  border-radius: 15px;
+  background: #000;
 }
 
 button {
-  background: #d6a64c;
-  color: #17110a;
+  background: #d5a64b;
+  color: #17100a;
   border: none;
   border-radius: 30px;
-  padding: 15px 28px;
+  padding: 14px 25px;
+  margin: 10px;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
 }
 
-#menu {
-  display: none;
-  min-height: 100vh;
-  background: #080808;
-  padding: 15px 10px 25px;
+button:disabled {
+  opacity: 0.5;
 }
 
-.menu-heading {
-  color: #f7cf83;
-  font-size: 23px;
-  margin: 10px 0 15px;
+#menuScreen {
+  display: none;
+  padding: 10px;
 }
 
 .photo-area {
   width: 100%;
-  height: calc(100vh - 155px);
-  min-height: 400px;
+  height: calc(100dvh - 155px);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.photo-area img {
-  width: 100%;
-  height: 100%;
+#menuImage {
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 .controls {
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 12px;
-  margin-top: 15px;
+  flex-wrap: wrap;
 }
 
-.controls button {
-  padding: 13px 22px;
-}
-
-.counter {
-  color: #fff;
-  font-size: 15px;
-  min-width: 55px;
-}
-
-.restart {
-  margin-top: 18px;
-  background: #333;
-  color: white;
-}
-
-@media (max-width: 600px) {
-  #menu {
-    padding: 8px 5px 15px;
-  }
-
-  .menu-heading {
-    font-size: 20px;
-    margin: 8px 0;
-  }
-
-  .photo-area {
-    height: calc(100dvh - 135px);
-    min-height: 350px;
-  }
-
-  .photo-area img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-
-  .controls button {
-    padding: 12px 18px;
-    font-size: 14px;
-  }
+.small {
+  font-size: 14px;
+  color: #ddd;
 }
 </style>
 </head>
 
 <body>
 
-<section class="welcome" id="welcome">
-  <div class="chef">👨🏻‍🍳</div>
+<!-- WELCOME SCREEN -->
+<section class="screen" id="welcomeScreen">
 
   <h1>FIRST SALAHIYA RESTAURANT</h1>
 
-  <p>
-    Welcome to First Salahiya Restaurant!<br>
-    We're delighted to serve you.
-  </p>
+  <p>Welcome! We're delighted to serve you.</p>
 
-  <button onclick="startMenu()">VIEW OUR MENU</button>
+  <video id="welcomeVideo" playsinline controls preload="metadata">
+    <source src="./welcome.mp4" type="video/mp4">
+    Your browser does not support video.
+  </video>
+
+  <button id="playButton" onclick="playWelcome()">
+    PLAY WELCOME VIDEO
+  </button>
+
+  <button id="menuButton" onclick="openMenu()" style="display:none">
+    VIEW OUR MENU
+  </button>
+
+  <p class="small">Thank you for choosing First Salahiya Restaurant.</p>
+
 </section>
 
-<section id="menu">
-  <h2 class="menu-heading">OUR MENU</h2>
+
+<!-- MENU SCREEN -->
+<section id="menuScreen">
+
+  <h1>OUR MENU</h1>
 
   <div class="photo-area">
-    <img id="menuImage"
-      src="https://placehold.co/900x1400/252525/ffffff?text=MENU+PAGE+1"
-      alt="Restaurant menu page">
+    <img id="menuImage" src="menu1.jpg" alt="Restaurant Menu">
   </div>
+
+  <p id="counter">1 / 4</p>
 
   <div class="controls">
-    <button onclick="previousSlide()">❮ PREVIOUS</button>
-    <span class="counter" id="counter">1 / 4</span>
-    <button onclick="nextSlide()">NEXT ❯</button>
+    <button onclick="previousPhoto()">PREVIOUS</button>
+    <button onclick="nextPhoto()">NEXT</button>
   </div>
 
-  <button class="restart" onclick="restartMenu()">BACK TO WELCOME</button>
+  <button onclick="backToWelcome()">BACK TO WELCOME</button>
+
 </section>
 
+
 <script>
-const menuPhotos = [
-  "https://placehold.co/900x1400/252525/ffffff?text=MENU+PAGE+1",
-  "https://placehold.co/900x1400/303030/ffffff?text=MENU+PAGE+2",
-  "https://placehold.co/900x1400/383020/ffffff?text=MENU+PAGE+3",
-  "https://placehold.co/900x1400/202b25/ffffff?text=MENU+PAGE+4"
-];
+const welcomeVideo = document.getElementById("welcomeVideo");
+const playButton = document.getElementById("playButton");
+const menuButton = document.getElementById("menuButton");
 
-let current = 0;
+function playWelcome() {
+  playButton.disabled = true;
+  playButton.textContent = "PLAYING...";
 
-function startMenu() {
-  const button = document.querySelector(".welcome button");
-  button.textContent = "PLEASE WAIT...";
-
-  if ("speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
-
-    const speech = new SpeechSynthesisUtterance(
-      "Welcome to First Salahiya Restaurant! We are delighted to serve you. Please enjoy exploring our menu."
-    );
-
-    speech.lang = "en-IN";
-    speech.rate = 0.85;
-    speech.pitch = 1;
-    speech.volume = 1;
-
-    speech.onend = openMenu;
-    speech.onerror = openMenu;
-
-    window.speechSynthesis.speak(speech);
-
-    setTimeout(openMenu, 12000);
-  } else {
-    openMenu();
-  }
+  welcomeVideo.play().then(() => {
+    playButton.style.display = "none";
+  }).catch(() => {
+    playButton.disabled = false;
+    playButton.textContent = "PLAY WELCOME VIDEO";
+    alert("Please tap the video play control to start.");
+  });
 }
 
-function openMenu() {
-  document.getElementById("welcome").style.display = "none";
-  document.getElementById("menu").style.display = "block";
-  showSlide();
-}
-
-function showSlide() {
-  document.getElementById("menuImage").src = menuPhotos[current];
-  document.getElementById("counter").textContent =
-    (current + 1) + " / " + menuPhotos.length;
-}
-
-function nextSlide() {
-  current = (current + 1) % menuPhotos.length;
-  showSlide();
-}
-
-function previousSlide() {
-  current = (current - 1 + menuPhotos.length) % menuPhotos.length;
-  showSlide();
-}
-
-function restartMenu() {
-  current = 0;
-  document.getElementById("menu").style.display = "none";
-  document.getElementById("welcome").style.display = "flex";
-
-  const button = document.querySelector(".welcome button");
-  button.textContent = "VIEW OUR MENU";
-
-  if ("speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
-  }
-}
-
-// Mobile swipe support
-let touchStartX = 0;
-
-const photoArea = document.querySelector(".photo-area");
-
-photoArea.addEventListener("touchstart", function(event) {
-  touchStartX = event.changedTouches[0].screenX;
+welcomeVideo.addEventListener("ended", function() {
+  menuButton.style.display = "inline-block";
+  playButton.style.display = "none";
 });
 
-photoArea.addEventListener("touchend", function(event) {
-  const touchEndX = event.changedTouches[0].screenX;
-  const difference = touchEndX - touchStartX;
+function openMenu() {
+  welcomeVideo.pause();
+  document.getElementById("welcomeScreen").style.display = "none";
+  document.getElementById("menuScreen").style.display = "block";
+  showPhoto();
+}
 
-  if (Math.abs(difference) > 50) {
-    if (difference < 0) {
-      nextSlide();
-    } else {
-      previousSlide();
-    }
-  }
+function backToWelcome() {
+  document.getElementById("menuScreen").style.display = "none";
+  document.getElementById("welcomeScreen").style.display = "flex";
+  welcomeVideo.currentTime = 0;
+  menuButton.style.display = "none";
+  playButton.style.display = "inline-block";
+  playButton.disabled = false;
+  playButton.textContent = "PLAY WELCOME VIDEO";
+}
+
+const photos = [
+  "menu1.jpg",
+  "menu2.jpg",
+  "menu3.jpg",
+  "menu4.jpg"
+];
+
+let currentPhoto = 0;
+
+function showPhoto() {
+  document.getElementById("menuImage").src = photos[currentPhoto];
+  document.getElementById("counter").textContent =
+    (currentPhoto + 1) + " / " + photos.length;
+}
+
+function nextPhoto() {
+  currentPhoto = (currentPhoto + 1) % photos.length;
+  showPhoto();
+}
+
+function previousPhoto() {
+  currentPhoto = (currentPhoto - 1 + photos.length) % photos.length;
+  showPhoto();
+}
+
+// Swipe support for mobile
+let touchStartX = 0;
+
+document.getElementById("menuImage").addEventListener("touchstart", function(e) {
+  touchStartX = e.changedTouches[0].screenX;
+});
+
+document.getElementById("menuImage").addEventListener("touchend", function(e) {
+  let touchEndX = e.changedTouches[0].screenX;
+
+  if (touchStartX - touchEndX > 50) nextPhoto();
+  if (touchEndX - touchStartX > 50) previousPhoto();
 });
 </script>
 
