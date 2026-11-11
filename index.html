@@ -150,6 +150,9 @@ const playButton = document.getElementById("playButton");
 const menuButton = document.getElementById("menuButton");
 
 function playWelcome() {
+  welcomeVideo.muted = false;
+  welcomeVideo.volume = 1;
+  
   playButton.disabled = true;
   playButton.textContent = "PLAYING...";
 
