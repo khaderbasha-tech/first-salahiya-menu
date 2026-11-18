@@ -4,8 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>First Salahiya Restaurant</title>
+
 <style>
 * { box-sizing: border-box; }
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -13,6 +15,7 @@ body {
   color: white;
   text-align: center;
 }
+
 .screen {
   min-height: 100vh;
   padding: 20px;
@@ -21,16 +24,27 @@ body {
   align-items: center;
   justify-content: center;
 }
-h1 { color: #f5cf82; font-size: 30px; margin: 12px 0; }
-p { font-size: 17px; line-height: 1.6; }
+
+h1 {
+  color: #f5cf82;
+  font-size: 30px;
+  margin: 12px 0;
+}
+
+p {
+  font-size: 17px;
+  line-height: 1.6;
+}
+
 video {
   width: 100%;
   height: auto;
   display: block;
   border-radius: 15px;
   background: black;
-  object-fit: cover; /* ye black side space hata dega */
+  object-fit: cover;
 }
+
 button {
   background: #d5a64b;
   color: #17100a;
@@ -42,8 +56,47 @@ button {
   font-weight: bold;
   cursor: pointer;
 }
-button:disabled { opacity: 0.5; }
-#menuScreen { display: none; padding: 10px; }
+
+button:disabled {
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* MENU LOADING BUTTON */
+.menu-loading-btn {
+  width: 100%;
+  max-width: 350px;
+  padding: 16px;
+  margin: 15px 0;
+  background: linear-gradient(135deg, #f7d774, #c28a22);
+  color: #17100a;
+  border-radius: 15px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 17px;
+  letter-spacing: 1px;
+  box-shadow: 0 0 15px rgba(213,166,75,0.35);
+}
+
+/* ROTATING GOLDEN SPARKLE */
+.rotating-sparkle {
+  display: inline-block;
+  font-size: 27px;
+  animation: sparkleRotate 2s linear infinite;
+}
+
+@keyframes sparkleRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+#menuScreen {
+  display: none;
+  padding: 10px;
+}
+
 .photo-area {
   width: 100%;
   height: calc(100dvh - 155px);
@@ -51,109 +104,217 @@ button:disabled { opacity: 0.5; }
   align-items: center;
   justify-content: center;
 }
+
 #menuImage {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
   border-radius: 10px;
 }
-.controls { display: flex; justify-content: center; flex-wrap: wrap; }
-.small { font-size: 14px; color: #ddd; }
+
+.controls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.small {
+  font-size: 14px;
+  color: #ddd;
+}
 </style>
 </head>
+
 <body>
 
 <section class="screen" id="welcomeScreen">
+
   <h1>FIRST SALAHIYA RESTAURANT</h1>
+
   <p>Welcome! We're delighted to serve you.</p>
+
   <video id="welcomeVideo" playsinline controls preload="auto">
     <source src="welcome.mp4" type="video/mp4">
     Your browser does not support video.
   </video>
-  <button id="playButton" onclick="playWelcome()">PLAY WELCOME VIDEO</button>
-  <button id="menuButton" onclick="openMenu()" style="display:none">VIEW OUR MENU</button>
-  <p class="small">Thank you for choosing First Salahiya Restaurant.</p>
+
+  <button id="playButton" onclick="playWelcome()">
+    PLAY WELCOME VIDEO
+  </button>
+
+  <!-- ANIMATED MENU LOADING BUTTON -->
+  <button class="menu-loading-btn" id="menuLoadingBtn" disabled>
+    <span class="rotating-sparkle">✦</span>
+    MENU LOADING...
+    <span class="rotating-sparkle">✦</span>
+  </button>
+
+  <p class="small">
+    Thank you for choosing First Salahiya Restaurant.
+  </p>
+
 </section>
 
+
 <section id="menuScreen">
+
   <h1>OUR MENU</h1>
+
   <div class="photo-area">
     <img id="menuImage" src="menu1.jpg" alt="Restaurant Menu">
   </div>
+
   <p id="counter">1 / 4</p>
+
   <div class="controls">
     <button onclick="previousPhoto()">PREVIOUS</button>
     <button onclick="nextPhoto()">NEXT</button>
   </div>
+
   <button onclick="backToWelcome()">BACK TO WELCOME</button>
+
 </section>
 
+
 <script>
+
 const welcomeVideo = document.getElementById("welcomeVideo");
 const playButton = document.getElementById("playButton");
-const menuButton = document.getElementById("menuButton");
+const menuLoadingBtn = document.getElementById("menuLoadingBtn");
 
 function playWelcome() {
+
   welcomeVideo.muted = false;
   welcomeVideo.volume = 1.0;
+
   playButton.disabled = true;
   playButton.textContent = "PLAYING...";
+
   welcomeVideo.play().then(() => {
-    welcomeVideo.muted = false;
+
     playButton.style.display = "none";
+    menuLoadingBtn.style.display = "flex";
+
   }).catch(() => {
+
     playButton.disabled = false;
     playButton.textContent = "PLAY WELCOME VIDEO";
-    alert("Tap on video and make sure volume is up");
+
+    alert("Please tap the video play button to start.");
+
   });
+
 }
+
+
+// AUTOMATICALLY OPEN MENU AFTER VIDEO ENDS
 
 welcomeVideo.addEventListener("ended", function() {
-  menuButton.style.display = "inline-block";
-  playButton.style.display = "none";
+
+  menuLoadingBtn.style.display = "none";
+  openMenu();
+
 });
+
+
+// OPEN MENU
 
 function openMenu() {
+
   welcomeVideo.pause();
+
   document.getElementById("welcomeScreen").style.display = "none";
+
   document.getElementById("menuScreen").style.display = "block";
+
   showPhoto();
+
 }
+
+
+// BACK TO WELCOME
 
 function backToWelcome() {
+
   document.getElementById("menuScreen").style.display = "none";
+
   document.getElementById("welcomeScreen").style.display = "flex";
+
   welcomeVideo.currentTime = 0;
-  menuButton.style.display = "none";
+
+  menuLoadingBtn.style.display = "none";
+
   playButton.style.display = "inline-block";
+
   playButton.disabled = false;
+
   playButton.textContent = "PLAY WELCOME VIDEO";
+
 }
 
-const photos = ["menu1.jpg","menu2.jpg","menu3.jpg","menu4.jpg"];
+
+// MENU PHOTOS
+
+const photos = [
+  "menu1.jpg",
+  "menu2.jpg",
+  "menu3.jpg",
+  "menu4.jpg"
+];
+
 let currentPhoto = 0;
 
+
 function showPhoto() {
+
   document.getElementById("menuImage").src = photos[currentPhoto];
-  document.getElementById("counter").textContent = (currentPhoto + 1) + " / " + photos.length;
+
+  document.getElementById("counter").textContent =
+    (currentPhoto + 1) + " / " + photos.length;
+
 }
+
+
 function nextPhoto() {
+
   currentPhoto = (currentPhoto + 1) % photos.length;
+
   showPhoto();
+
 }
+
+
 function previousPhoto() {
-  currentPhoto = (currentPhoto - 1 + photos.length) % photos.length;
+
+  currentPhoto =
+    (currentPhoto - 1 + photos.length) % photos.length;
+
   showPhoto();
+
 }
+
+
+// MOBILE SWIPE SUPPORT
+
 let touchStartX = 0;
+
 document.getElementById("menuImage").addEventListener("touchstart", function(e) {
+
   touchStartX = e.changedTouches[0].screenX;
+
 });
+
 document.getElementById("menuImage").addEventListener("touchend", function(e) {
+
   let touchEndX = e.changedTouches[0].screenX;
+
   if (touchStartX - touchEndX > 50) nextPhoto();
+
   if (touchEndX - touchStartX > 50) previousPhoto();
+
 });
+
 </script>
+
 </body>
 </html>
