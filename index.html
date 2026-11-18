@@ -182,138 +182,94 @@ const welcomeVideo = document.getElementById("welcomeVideo");
 const playButton = document.getElementById("playButton");
 const menuLoadingBtn = document.getElementById("menuLoadingBtn");
 
-function playWelcome() {
+function startWelcomeVideo() {
+  playButton.style.display = "none";
+  menuLoadingBtn.style.display = "flex";
 
-  welcomeVideo.muted = false;
-  welcomeVideo.volume = 1.0;
+  welcomeVideo.muted = true;
+  welcomeVideo.volume = 1;
 
-  playButton.disabled = true;
-  playButton.textContent = "PLAYING...";
-
-  welcomeVideo.play().then(() => {
-
-    playButton.style.display = "none";
-    menuLoadingBtn.style.display = "flex";
-
-  }).catch(() => {
-
+  welcomeVideo.play().catch(() => {
+    menuLoadingBtn.style.display = "none";
+    playButton.style.display = "inline-block";
     playButton.disabled = false;
     playButton.textContent = "PLAY WELCOME VIDEO";
-
-    alert("Please tap the video play button to start.");
-
   });
-
 }
 
+function playWelcome() {
+  welcomeVideo.muted = false;
+  welcomeVideo.volume = 1;
 
-// AUTOMATICALLY OPEN MENU AFTER VIDEO ENDS
+  welcomeVideo.play().then(() => {
+    playButton.style.display = "none";
+    menuLoadingBtn.style.display = "flex";
+  }).catch(() => {
+    alert("Please tap the video play button again.");
+  });
+}
 
+// Try autoplay when the page loads
+window.addEventListener("load", startWelcomeVideo);
+
+// Automatically open menu when video ends
 welcomeVideo.addEventListener("ended", function() {
-
   menuLoadingBtn.style.display = "none";
   openMenu();
-
 });
 
-
-// OPEN MENU
-
 function openMenu() {
-
   welcomeVideo.pause();
-
   document.getElementById("welcomeScreen").style.display = "none";
-
   document.getElementById("menuScreen").style.display = "block";
-
   showPhoto();
-
 }
 
-
-// BACK TO WELCOME
-
 function backToWelcome() {
-
   document.getElementById("menuScreen").style.display = "none";
-
   document.getElementById("welcomeScreen").style.display = "flex";
 
   welcomeVideo.currentTime = 0;
+  welcomeVideo.muted = true;
 
   menuLoadingBtn.style.display = "none";
-
   playButton.style.display = "inline-block";
-
   playButton.disabled = false;
-
   playButton.textContent = "PLAY WELCOME VIDEO";
-
 }
 
-
-// MENU PHOTOS
-
-const photos = [
-  "menu1.jpg",
-  "menu2.jpg",
-  "menu3.jpg",
-  "menu4.jpg"
-];
-
+// Menu photos
+const photos = ["menu1.jpg", "menu2.jpg", "menu3.jpg", "menu4.jpg"];
 let currentPhoto = 0;
 
-
 function showPhoto() {
-
   document.getElementById("menuImage").src = photos[currentPhoto];
-
   document.getElementById("counter").textContent =
     (currentPhoto + 1) + " / " + photos.length;
-
 }
-
 
 function nextPhoto() {
-
   currentPhoto = (currentPhoto + 1) % photos.length;
-
   showPhoto();
-
 }
-
 
 function previousPhoto() {
-
-  currentPhoto =
-    (currentPhoto - 1 + photos.length) % photos.length;
-
+  currentPhoto = (currentPhoto - 1 + photos.length) % photos.length;
   showPhoto();
-
 }
 
-
-// MOBILE SWIPE SUPPORT
-
+// Mobile swipe
 let touchStartX = 0;
 
 document.getElementById("menuImage").addEventListener("touchstart", function(e) {
-
   touchStartX = e.changedTouches[0].screenX;
-
 });
 
 document.getElementById("menuImage").addEventListener("touchend", function(e) {
-
   let touchEndX = e.changedTouches[0].screenX;
-
   if (touchStartX - touchEndX > 50) nextPhoto();
-
   if (touchEndX - touchStartX > 50) previousPhoto();
-
 });
-
 </script>
 
 </body>
