@@ -178,41 +178,28 @@ button:disabled {
 
 <script>
 
+
 const welcomeVideo = document.getElementById("welcomeVideo");
 const playButton = document.getElementById("playButton");
 const menuLoadingBtn = document.getElementById("menuLoadingBtn");
 
-function startWelcomeVideo() {
+function playWelcome() {
+  welcomeVideo.pause();
+  welcomeVideo.currentTime = 0;
+  welcomeVideo.muted = false;
+  welcomeVideo.volume = 1;
+
   playButton.style.display = "none";
   menuLoadingBtn.style.display = "flex";
-
-  welcomeVideo.muted = true;
-  welcomeVideo.volume = 1;
 
   welcomeVideo.play().catch(() => {
     menuLoadingBtn.style.display = "none";
     playButton.style.display = "inline-block";
-    playButton.disabled = false;
-    playButton.textContent = "PLAY WELCOME VIDEO";
+    alert("Please tap PLAY WELCOME VIDEO again.");
   });
 }
 
-function playWelcome() {
-  welcomeVideo.muted = false;
-  welcomeVideo.volume = 1;
-
-  welcomeVideo.play().then(() => {
-    playButton.style.display = "none";
-    menuLoadingBtn.style.display = "flex";
-  }).catch(() => {
-    alert("Please tap the video play button again.");
-  });
-}
-
-// Try autoplay when the page loads
-window.addEventListener("load", startWelcomeVideo);
-
-// Automatically open menu when video ends
+// Automatically open menu when video finishes
 welcomeVideo.addEventListener("ended", function() {
   menuLoadingBtn.style.display = "none";
   openMenu();
@@ -229,13 +216,13 @@ function backToWelcome() {
   document.getElementById("menuScreen").style.display = "none";
   document.getElementById("welcomeScreen").style.display = "flex";
 
+  welcomeVideo.pause();
   welcomeVideo.currentTime = 0;
-  welcomeVideo.muted = true;
+  welcomeVideo.muted = false;
 
   menuLoadingBtn.style.display = "none";
   playButton.style.display = "inline-block";
   playButton.disabled = false;
-  playButton.textContent = "PLAY WELCOME VIDEO";
 }
 
 // Menu photos
@@ -270,6 +257,7 @@ document.getElementById("menuImage").addEventListener("touchend", function(e) {
   if (touchStartX - touchEndX > 50) nextPhoto();
   if (touchEndX - touchStartX > 50) previousPhoto();
 });
+
 </script>
 
 </body>
